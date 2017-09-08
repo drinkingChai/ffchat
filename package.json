@@ -1,0 +1,22 @@
+{
+  "name": "ffchat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "DATABASE_URL=postgres://localhost/ffchat nodemon app.js --ignore public/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.15.4",
+    "jquery": "^3.2.1",
+    "nunjucks": "^3.0.1",
+    "pg": "^7.3.0",
+    "sequelize": "^4.8.2",
+    "socket.io": "^2.0.3"
+  }
+}
