@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "DATABASE_URL=postgres://localhost/ffchat nodemon app.js --ignore public/"
+    "start:dev": "DATABASE_URL=postgres://localhost/ffchat nodemon app.js --ignore public/",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
