@@ -35,7 +35,28 @@ const User = db.define('user', {
 User.getByHash = (hash)=> {
   return User.findAll()
   .then(users=> {
-    return users.filter(user=> hash == user.hash)
+    let user = users.filter(user=> hash == user.hash)[0]
+    if (user) return { name: user.name, id: user.id, hash: user.hash } // massage
+  })
+}
+
+User.getByUsernamePassword = (username, password)=> {
+  return User.findAll()
+  .then(users=> {
+    let user = users.filter(user=> getSha1(`${username}${getSha1(password)}`) == user.hash)[0]
+    if (user) return { name: user.name, id: user.id, hash: user.hash } // massage
+  })
+}
+
+Message.newMessage = (data)=> {
+  let user
+  return User.findById(data.user.id)
+  .then(_user=> {
+    user = _user
+    return Message.create({ content: data.message })
+  })
+  .then(newMessage=> {
+    return newMessage.setUser(user)
   })
 }
 

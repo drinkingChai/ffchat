@@ -4,6 +4,8 @@ const socketio = require('socket.io')
 const bodyParser = require('body-parser')
 const getSha1 = require('./getSha1')
 const conn = require('./db')
+const User = conn.models.User
+const Message = conn.models.Message
 
 const app = express()
 app.set('view engine', 'html')
@@ -19,34 +21,49 @@ app.get('/', (req, res, next)=> {
 })
 
 app.get('/index', (req, res, next)=> {
-  res.render('index')
+  Message.findAll({ include: [ User ]})
+  .then(messages=> {
+    res.render('index', { messages })
+  })
 })
 
 app.post('/users/new', (req, res, next)=> {
-  conn.models.User.create(req.body)
+  User.create(req.body)
   .then(user=> {
     res.send(user.hash)
   })
 })
 
 app.get('/users/validate/:hash', (req, res, next)=> {
-  conn.models.User.getByHash(req.params.hash)
-  .then(users=> {
-    res.send(users[0] ? users[0].name : null)
+  User.getByHash(req.params.hash)
+  .then(user=> {
+    res.send(user)
   })
 })
 
-app.get('/users/login/:name/:password', (req, res, next)=> {
-  conn.models.User.getByHash(getSha1(`${req.params.name}${getSha1(req.params.password)}`))
-  .then(users=> {
-    res.send(users[0] ? { name: users[0].name, hash: users[0].hash } : null)
+app.get('/users/login/:username/:password', (req, res, next)=> {
+  User.getByUsernamePassword(req.params.username, req.params.password)
+  .then(user=> {
+    res.send(user)
   })
+})
+
+app.get('/messages', (req, res, next)=> {
+  Message.findAll({
+    include: [ User ]
+  })
+  .then(messages=> res.send(messages))
+})
+
+app.post('/messages/new', (req, res, next)=> {
+  Message.newMessage(req.body)
+  .then(newMessage=> res.send(newMessage))
 })
 
 const port = process.env.PORT || 3000
 
 
-conn.db.sync({ force: true })
+conn.db.sync()
 .then(()=> {
   const server = app.listen(port, ()=> {
     console.log(`listening on port ${port}`);

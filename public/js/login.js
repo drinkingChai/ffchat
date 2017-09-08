@@ -27,10 +27,10 @@ $(function() {
   })
 
   $('#sign-in').on('click', ()=> {
-    const name = $('#username').val(),
+    const username = $('#username').val(),
       password = $('#password').val()
 
-    $.get(`/users/login/${name}/${password}`)
+    $.get(`/users/login/${username}/${password}`)
     .then(user=> {
       if(user) {
         localStorage.setItem('key', user.hash)

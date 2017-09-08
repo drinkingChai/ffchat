@@ -12,12 +12,22 @@ $(function() {
 
       function sendMessage() {
         if (!$('#new-message').val().trim().length) return
-        socket.emit('newMessage', { id: 1, message: $('#new-message').val() })
-        $('#new-message').val("")
+
+        let payload = { user, message: $('#new-message').val() }
+        $.ajax({
+          url: '/messages/new',
+          type: 'POST',
+          data: JSON.stringify(payload),
+          contentType: 'application/json'
+        })
+        .then(newMessage=> {
+          socket.emit('newMessage', payload)
+          $('#new-message').val("")
+        })
       }
 
       socket.on('newMessage', (payload)=> {
-        $('#messages').append(`<li>${payload.message}</li>`)
+        $('#messages').append(`<li>${payload.user.name}: ${payload.message}</li>`)
       })
 
 
@@ -28,7 +38,6 @@ $(function() {
         window.location.replace(`/`)
       })
 
-      // 
       $('button').on('click', function() {
         sendMessage()
       })

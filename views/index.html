@@ -2,7 +2,11 @@
 
 {% block content %}
 
-  <ul id="messages"></ul>
+  <ul id="messages">
+    {% for i in messages %}
+      <li>{{ i.user.name }}: {{ i.content }}</li>
+    {% endfor %}
+  </ul>
   <input id="new-message" type="text" name="" placeholder="new message"><button>Send</button>
   <button id="logout">Logout</button>
 
