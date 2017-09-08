@@ -14,6 +14,7 @@ const User = db.define('user', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
     validate: { notEmpty: true }
   },
   password: {
