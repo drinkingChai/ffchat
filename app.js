@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 const conn = require('./db')
 const User = conn.models.User
 const Message = conn.models.Message
+const users = require('./routes/users');
+const messages = require('./routes/messages');
 
 const app = express()
 app.set('view engine', 'html')
@@ -26,38 +28,10 @@ app.get('/index', (req, res, next)=> {
   })
 })
 
-app.post('/users/new', (req, res, next)=> {
-  User.create(req.body)
-  .then(user=> {
-    res.send(user.hash)
-  })
-})
+app.use('/users', users)
+app.use('/messages', messages)
 
-app.get('/users/validate/:hash', (req, res, next)=> {
-  User.getByHash(req.params.hash)
-  .then(user=> {
-    res.send(user)
-  })
-})
 
-app.get('/users/login/:username/:password', (req, res, next)=> {
-  User.getByUsernamePassword(req.params.username, req.params.password)
-  .then(user=> {
-    res.send(user)
-  })
-})
-
-app.get('/messages', (req, res, next)=> {
-  Message.findAll({
-    include: [ User ]
-  })
-  .then(messages=> res.send(messages))
-})
-
-app.post('/messages/new', (req, res, next)=> {
-  Message.newMessage(req.body)
-  .then(newMessage=> res.send(newMessage))
-})
 
 const port = process.env.PORT || 3000
 
