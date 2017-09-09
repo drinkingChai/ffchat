@@ -1,24 +1,15 @@
+const conn = require('./conn')
 const getSha1 = require('./getSha1')
-const Sequelize = require('sequelize')
-const db = new Sequelize(process.env.DATABASE_URL, { logging: false })
 
-const Message = db.define('message', {
-  content: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: { notEmpty: true }
-  }
-})
-
-const User = db.define('user', {
+const User = conn.define('user', {
   name: {
-    type: Sequelize.STRING,
+    type: conn.Sequelize.STRING,
     allowNull: false,
     unique: true,
     validate: { notEmpty: true }
   },
   password: {
-    type: Sequelize.STRING,
+    type: conn.Sequelize.STRING,
     allowNull: false,
     validate: { notEmpty: true },
     set(val) {
@@ -49,26 +40,4 @@ User.getByUsernamePassword = (username, password)=> {
   })
 }
 
-Message.newMessage = (data)=> {
-  let user
-  return User.findById(data.user.id)
-  .then(_user=> {
-    user = _user
-    return Message.create({ content: data.message })
-  })
-  .then(newMessage=> {
-    return newMessage.setUser(user)
-  })
-}
-
-User.hasMany(Message)
-Message.belongsTo(User)
-
-
-module.exports = {
-  db,
-  models: {
-    User,
-    Message
-  }
-}
+module.exports = User

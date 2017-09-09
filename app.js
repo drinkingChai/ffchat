@@ -2,7 +2,6 @@ const express = require('express')
 const nunjucks = require('nunjucks')
 const socketio = require('socket.io')
 const bodyParser = require('body-parser')
-const getSha1 = require('./getSha1')
 const conn = require('./db')
 const User = conn.models.User
 const Message = conn.models.Message
@@ -63,7 +62,7 @@ app.post('/messages/new', (req, res, next)=> {
 const port = process.env.PORT || 3000
 
 
-conn.db.sync()
+conn.sync()
 .then(()=> {
   const server = app.listen(port, ()=> {
     console.log(`listening on port ${port}`);
